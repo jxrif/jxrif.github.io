@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const themeToggle = document.getElementById("theme-toggle");
 
   // Fetch all audio files in the clips folder
-  fetch("clips/")
+  fetch("/clips")
     .then((response) => response.text())
     .then((data) => {
       const parser = new DOMParser();
