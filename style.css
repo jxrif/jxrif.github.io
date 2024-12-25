@@ -1,0 +1,206 @@
+:root {
+  --background-color: #f0f0f0;
+  --container-color: #ffffff;
+  --text-color: #333;
+  --button-bg: #d3d3d3;
+  --button-text-color: #2b2b2b;
+  --button-hover-bg: #b0b0b0;
+  --button-bg-dark: #333333;
+  --button-hover-bg-dark: #444444;
+  --icon-color: #333;
+  --theme-toggle-icon-color: #fff;
+  --theme-toggle-bg-light: #333;
+  --theme-toggle-bg-dark: #121212;
+  --title-bg-light: linear-gradient(to right, #f0f0f0, #ffffff, #f0f0f0);
+  --title-bg-dark: linear-gradient(to right, #121212, #1e1e1e, #121212);
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--background-color);
+  margin: 0;
+  font-family: Arial, sans-serif;
+  transition: background-color 0.3s;
+}
+
+.container {
+  text-align: center;
+  background-color: var(--container-color);
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  max-width: 600px;
+  max-height: 80%;
+  overflow: hidden;
+  transition: background-color 0.3s;
+}
+
+.meme-container {
+  position: relative;
+  display: inline-block;
+}
+
+.meme-img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  max-height: 400px;
+}
+
+.votes {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+  color: var(--icon-color);
+}
+
+.votes i {
+  margin-right: 5px;
+}
+
+.generate-btn {
+  padding: 10px 20px;
+  background-color: var(--button-bg);
+  color: var(--button-text-color);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.generate-btn:hover {
+  background-color: var(--button-hover-bg);
+}
+
+.generate-btn:disabled {
+  background-color: #b0b0b0; /* Light grey for disabled state */
+  color: #666666; /* Dark grey text for disabled state */
+  cursor: not-allowed;
+}
+
+.generate-btn:disabled:hover {
+  cursor: no-drop; /* Prohibition cursor */
+}
+
+.meme-title {
+  font-size: 1em;
+  color: var(--text-color);
+  margin-top: 10px;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 5px 10px;
+  background: var(--title-bg-light);
+}
+
+.theme-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: var(--theme-toggle-bg-light);
+  color: var(--theme-toggle-icon-color);
+  border: none;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 20px;
+  transition: background-color 0.3s;
+}
+
+.theme-toggle:hover {
+  background-color: var(--theme-toggle-bg-dark);
+}
+
+body.dark {
+  --background-color: #121212;
+  --container-color: #1e1e1e;
+  --text-color: #e0e0e0;
+  --button-bg: var(--button-bg-dark);
+  --button-hover-bg: var(--button-hover-bg-dark);
+  --button-text-color-dark: #ffffff;
+  --icon-color: #ffffff;
+  --theme-toggle-bg-light: #555;
+  --theme-toggle-bg-dark: #333;
+}
+
+body.dark .theme-toggle {
+  background-color: var(--theme-toggle-bg-dark);
+  color: var(--theme-toggle-icon-color);
+}
+
+body.dark .theme-toggle:hover {
+  background-color: var(--theme-toggle-bg-light);
+}
+
+body.dark .generate-btn {
+  background-color: var(--button-bg-dark);
+  color: var(--button-text-color-dark);
+}
+
+body.dark .generate-btn:hover {
+  background-color: var(--button-hover-bg-dark);
+}
+
+body.dark .meme-title {
+  color: var(--text-color);
+  background: var(--title-bg-dark);
+}
+
+body.dark .votes {
+  color: var(--icon-color);
+}
+
+@keyframes emojiFall {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+.emoji {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  background-image: url("https://parspng.com/wp-content/uploads/2022/06/imojipng.parspng.com_.png");
+  background-size: cover;
+  z-index: -1; /* Ensure the emojis fall behind the body */
+  pointer-events: none;
+  animation: emojiFall 5s linear infinite;
+  opacity: 0.8;
+}
+
+.dropdown {
+  margin-top: 10px;
+}
+
+.dropdown label {
+  font-size: 1em;
+  color: var(--text-color);
+}
+
+#dropdown-menu {
+  padding: 5px;
+  border: 1px solid var(--button-bg);
+  border-radius: 5px;
+  background-color: var(--container-color);
+  color: var(--text-color);
+  transition: border-color 0.3s;
+}
+
+#dropdown-menu:hover {
+  border-color: var(--button-hover-bg);
+}
+
+#dropdown-menu option {
+  background-color: var(--container-color);
+  color: var(--text-color);
+}

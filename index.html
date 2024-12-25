@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=
+    1.0"
+    />
+    <meta name="title" content="Coded by jxrif." />
+    <title>Meme Generator</title>
+    <meta
+      name="description"
+      content="Welcome to the Meme Generator! Generate and enjoy the funniest memes from various categories like animal memes, cartoon memes, dad jokes, and more."
+    />
+    <link rel="icon" href="images/icon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="meme-container">
+        <img class="meme-img" id="meme-img" src="" alt="Meme" />
+      </div>
+      <div class="votes" id="votes">
+        <span
+          ><i class="fas fa-arrow-up" id="upvote-icon"></i>
+          <span id="upvotes">0</span></span
+        >
+      </div>
+      <button class="generate-btn" onclick="generateMeme()">Generate</button>
+      <div class="meme-title" id="meme-title">Meme Title</div>
+      <div class="dropdown">
+        <label for="dropdown-menu">Choose Meme Type:</label>
+        <select id="dropdown-menu" name="dropdown-menu">
+          <option value="memes">Memes</option>
+          <option value="animal_memes">Animal Memes</option>
+          <option value="cartoon_memes">Cartoon Memes</option>
+          <option value="facebook_memes">Facebook Memes</option>
+          <option value="dad_jokes">Dad Jokes</option>
+          <option value="funny">Funny</option>
+          <option value="wholesome_memes">Wholesome Memes</option>
+          <!-- Add more options as needed -->
+        </select>
+      </div>
+    </div>
+
+    <button id="theme-toggle" class="theme-toggle">
+      <i class="fas fa-sun"></i>
+    </button>
+
+    <script src="script.js"></script>
+  </body>
+</html>
