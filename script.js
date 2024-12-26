@@ -15,33 +15,34 @@ document.addEventListener("DOMContentLoaded", () => {
     themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
   }
 
-  // Fetch all audio files in the clips folder
-  fetch("./clips/")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.text();
-    })
+  // Fetch the GitHub page with the list of files
+  fetch("https://github.com/jxrif/jxrif.github.io/blob/main/clips")
+    .then((response) => response.text())
     .then((data) => {
       const parser = new DOMParser();
-      const htmlDoc = parser.parseFromString(data, "text/html");
-      const files = Array.from(htmlDoc.querySelectorAll("a"))
-        .map((a) => a.href.split("/").pop())
-        .filter((file) => file.endsWith(".mp3"));
+      const doc = parser.parseFromString(data, "text/html");
+      const links = Array.from(doc.querySelectorAll("a.js-navigation-open"))
+        .map((link) => link.href)
+        .filter((url) => url.endsWith(".mp3"))
+        .map((url) => url.replace("/blob/", "/raw/")); // Convert to raw URLs
 
-      if (files.length === 0) {
+      if (links.length === 0) {
         console.error("No audio files found.");
       } else {
-        files.forEach((file) => {
-          console.log("Found file:", file);
+        links.forEach((fileUrl) => {
+          const fileNameWithExtension = decodeURIComponent(
+            fileUrl.split("/").pop()
+          );
+          const fileName = fileNameWithExtension
+            .replace(".mp3", "")
+            .replace(/clips_/i, ""); // Remove ".mp3" and "clips_"
 
           const musicItem = document.createElement("div");
           musicItem.className = "music-item";
 
           const songTitle = document.createElement("span");
           songTitle.className = "song-title";
-          songTitle.textContent = decodeURIComponent(file.replace(".mp3", ""));
+          songTitle.textContent = fileName;
           songTitle.style.color = "var(--text-color)";
 
           const audioContainer = document.createElement("div");
@@ -49,7 +50,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
           const audio = document.createElement("audio");
           audio.className = "audio";
-          audio.src = `clips/${file}`;
+          audio.src = fileUrl;
+          audio.controls = true; // Enable audio controls for better testing
           audio.addEventListener("timeupdate", () =>
             updateProgress(audio, progressValue, currentTimeDisplay)
           );
@@ -96,8 +98,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
           const downloadBtn = document.createElement("a");
           downloadBtn.className = "download-btn";
-          downloadBtn.href = `clips/${file}`;
-          downloadBtn.download = decodeURIComponent(file);
+          downloadBtn.href = fileUrl;
+          downloadBtn.download = fileNameWithExtension.replace("clips_", ""); // Trim "clips_" from the download file name
           downloadBtn.innerHTML = '<i class="fas fa-download"></i>';
           downloadBtn.style.marginLeft = "10px";
 
