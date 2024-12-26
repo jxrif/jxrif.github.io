@@ -16,8 +16,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Fetch all audio files in the clips folder
-  fetch("/clips")
-    .then((response) => response.text())
+  fetch("clips/")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.text();
+    })
     .then((data) => {
       const parser = new DOMParser();
       const htmlDoc = parser.parseFromString(data, "text/html");
@@ -25,75 +30,86 @@ document.addEventListener("DOMContentLoaded", () => {
         .map((a) => a.href.split("/").pop())
         .filter((file) => file.endsWith(".mp3"));
 
-      files.forEach((file) => {
-        const musicItem = document.createElement("div");
-        musicItem.className = "music-item";
+      if (files.length === 0) {
+        console.error("No audio files found.");
+      } else {
+        files.forEach((file) => {
+          console.log("Found file:", file);
 
-        const songTitle = document.createElement("span");
-        songTitle.className = "song-title";
-        songTitle.textContent = decodeURIComponent(file.replace(".mp3", ""));
-        songTitle.style.color = "var(--text-color)";
+          const musicItem = document.createElement("div");
+          musicItem.className = "music-item";
 
-        const audioContainer = document.createElement("div");
-        audioContainer.className = "audio-container";
+          const songTitle = document.createElement("span");
+          songTitle.className = "song-title";
+          songTitle.textContent = decodeURIComponent(file.replace(".mp3", ""));
+          songTitle.style.color = "var(--text-color)";
 
-        const audio = document.createElement("audio");
-        audio.className = "audio";
-        audio.src = `clips/${file}`;
-        audio.addEventListener("timeupdate", () =>
-          updateProgress(audio, progressValue, currentTimeDisplay)
-        );
-        audio.addEventListener("ended", () => resetPlayButton(playPauseButton));
-        audio.addEventListener("loadedmetadata", () =>
-          updateDuration(audio, durationDisplay, progressBar, songTitle)
-        );
+          const audioContainer = document.createElement("div");
+          audioContainer.className = "audio-container";
 
-        const progressBar = document.createElement("div");
-        progressBar.className = "progress";
-        progressBar.addEventListener("mousedown", (e) =>
-          initDrag(e, audio, progressBar)
-        );
-        progressBar.addEventListener("click", (e) =>
-          seekAudio(e, audio, progressBar)
-        );
+          const audio = document.createElement("audio");
+          audio.className = "audio";
+          audio.src = `clips/${file}`;
+          audio.addEventListener("timeupdate", () =>
+            updateProgress(audio, progressValue, currentTimeDisplay)
+          );
+          audio.addEventListener("ended", () =>
+            resetPlayButton(playPauseButton)
+          );
+          audio.addEventListener("loadedmetadata", () =>
+            updateDuration(audio, durationDisplay, progressBar, songTitle)
+          );
 
-        const progressValue = document.createElement("div");
-        progressValue.className = "progress-value";
+          const progressBar = document.createElement("div");
+          progressBar.className = "progress";
+          progressBar.addEventListener("mousedown", (e) =>
+            initDrag(e, audio, progressBar)
+          );
+          progressBar.addEventListener("click", (e) =>
+            seekAudio(e, audio, progressBar)
+          );
 
-        const playPauseButton = document.createElement("button");
-        playPauseButton.innerHTML = '<i class="fas fa-play"></i>';
-        playPauseButton.className = "play-pause-btn";
-        playPauseButton.addEventListener("click", () =>
-          togglePlayPause(audio, playPauseButton)
-        );
-        playPauseButton.style.minWidth = "32px"; // Set a fixed width to prevent shifting
+          const progressValue = document.createElement("div");
+          progressValue.className = "progress-value";
 
-        const currentTimeDisplay = document.createElement("span");
-        currentTimeDisplay.className = "time";
-        currentTimeDisplay.textContent = "0:00";
+          const playPauseButton = document.createElement("button");
+          playPauseButton.innerHTML = '<i class="fas fa-play"></i>';
+          playPauseButton.className = "play-pause-btn";
+          playPauseButton.addEventListener("click", () =>
+            togglePlayPause(audio, playPauseButton)
+          );
+          playPauseButton.style.minWidth = "32px"; // Set a fixed width to prevent shifting
 
-        const durationDisplay = document.createElement("span");
-        durationDisplay.className = "time";
-        durationDisplay.textContent = " / 0:00"; // Default duration display
+          const currentTimeDisplay = document.createElement("span");
+          currentTimeDisplay.className = "time";
+          currentTimeDisplay.textContent = "0:00";
 
-        progressBar.appendChild(progressValue);
-        audioContainer.appendChild(playPauseButton);
-        audioContainer.appendChild(progressBar);
-        audioContainer.appendChild(currentTimeDisplay);
-        audioContainer.appendChild(durationDisplay);
+          const durationDisplay = document.createElement("span");
+          durationDisplay.className = "time";
+          durationDisplay.textContent = " / 0:00"; // Default duration display
 
-        const downloadBtn = document.createElement("a");
-        downloadBtn.className = "download-btn";
-        downloadBtn.href = `clips/${file}`;
-        downloadBtn.download = decodeURIComponent(file);
-        downloadBtn.innerHTML = '<i class="fas fa-download"></i>';
-        downloadBtn.style.marginLeft = "10px";
+          progressBar.appendChild(progressValue);
+          audioContainer.appendChild(playPauseButton);
+          audioContainer.appendChild(progressBar);
+          audioContainer.appendChild(currentTimeDisplay);
+          audioContainer.appendChild(durationDisplay);
 
-        musicItem.appendChild(songTitle);
-        musicItem.appendChild(audioContainer);
-        musicItem.appendChild(downloadBtn);
-        musicList.appendChild(musicItem);
-      });
+          const downloadBtn = document.createElement("a");
+          downloadBtn.className = "download-btn";
+          downloadBtn.href = `clips/${file}`;
+          downloadBtn.download = decodeURIComponent(file);
+          downloadBtn.innerHTML = '<i class="fas fa-download"></i>';
+          downloadBtn.style.marginLeft = "10px";
+
+          musicItem.appendChild(songTitle);
+          musicItem.appendChild(audioContainer);
+          musicItem.appendChild(downloadBtn);
+          musicList.appendChild(musicItem);
+        });
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching audio files:", error);
     });
 
   function updateProgress(audio, progressValue, currentTimeDisplay) {
